@@ -1,55 +1,20 @@
-N = 4
+N = 4 
 
-def printSolution(board):
-    for i in range(N):
-        for j in range(N):
-            print(board[i][j], end=" ")
-        print()
+row = []
 
-def isSafe(board, row, col):
-    for i in range(col):
-        if board[row][i] == 1:
-            return False
-
-    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
-    for i, j in zip(range(row, N), range(col, -1, -1)):
-        if board[i][j] == 1:
-            return False
-
-    return True
-
-def solveNQUtil(board, col):
-    if col >= N:
+def solve(c=0):
+    if c == N:
         return True
-
-    for i in range(N):
-        if isSafe(board, i, col):
-            board[i][col] = 1
-
-            if solveNQUtil(board, col + 1):
+    for r in range(N):
+        if r not in row and all(abs(r-row[i]) != c - i for i in range(c)):
+            row.append(r)
+            if solve(c+1):
                 return True
-
-            board[i][col] = 0
-
+            row.pop()
     return False
 
-def solveNQ():
-    board = [
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0]
-    ]
+solve()
+print("solution:\n")
 
-    if not solveNQUtil(board, 0):
-        print("Solution does not exist")
-        return False
-
-    print("Solution:")
-    printSolution(board)
-    return True
-
-solveNQ()
+for r in range(N):
+    print(" ".join("Q" if row[c] == r else "." for c in range(N)))
